@@ -344,18 +344,19 @@ export class Podman5DownloadMachineOS {
     writableStream: WritableStream<Uint8Array>,
   ) {
     let loaded = 0;
+    let lastPct = -1;
 
-    var progress = new TransformStream({
+    const progress = new TransformStream({
       transform(chunk, controller) {
         loaded += chunk.length;
 
-        // 20 chars = 100%
-        const i = Math.floor((loaded / total) * 20);
-        const dots = '.'.repeat(i);
-        const left = 20 - i;
-        const empty = ' '.repeat(left);
-
-        process.stdout.write(`\r⚡️ Downloading ${title} [${dots}${empty}] ${i * 5}%`);
+        const pct = Math.floor((loaded / total) * 20);
+        if (pct !== lastPct) {
+          lastPct = pct;
+          const dots = '.'.repeat(pct);
+          const empty = ' '.repeat(20 - pct);
+          process.stdout.write(`\r⚡️ Downloading ${title} [${dots}${empty}] ${pct * 5}%`);
+        }
         controller.enqueue(chunk);
       },
     });
