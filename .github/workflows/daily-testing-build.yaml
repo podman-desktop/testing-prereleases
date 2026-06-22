@@ -113,7 +113,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.PODMAN_DESKTOP_BOT_TOKEN }}
       AIRGAP_DOWNLOAD: ${{ matrix.airgap == 'true' && '1' || '' }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-24.04
